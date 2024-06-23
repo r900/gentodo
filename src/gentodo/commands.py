@@ -92,7 +92,6 @@ def show(ctx, verbose, brief):
         print(f"{'─'*spaces}")
         for key in ctx.obj['GENTODO'].data:
             title = ctx.obj['GENTODO'].data[key]['title']
-            print(title)
             match brief:
                 case 'left':
                     print(title)
@@ -100,6 +99,8 @@ def show(ctx, verbose, brief):
                     print(title.center(spaces))
                 case 'right':
                     print(title.rjust(spaces))
+                case _:
+                    print(title)
     else:
         print(f"{'Title'.ljust(spaces)}| Details")
         print(f"{'─'*(spaces+9)}")
