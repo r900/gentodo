@@ -70,9 +70,8 @@ class Gentodo:
 # Implement a form of wrapping
 @click.command(help="Shows the todo list")
 @click.pass_context
-@click.option("--verbose", is_flag=True)
-@click.option("--brief", type=click.STRING, default='left', required=False)
-def show(ctx, verbose, brief):
+@click.option("--verbose", '-v', is_flag=True)
+def show(ctx, verbose):
     '''Shows the items to do'''
     spaces = ctx.obj['GENTODO'].longest + 2
 
@@ -87,26 +86,36 @@ def show(ctx, verbose, brief):
         for key in ctx.obj['GENTODO'].data:
             print(f"{key:<2} │ {ctx.obj['GENTODO'].data[key]['title'].ljust(spaces)}"\
                   f"│ {ctx.obj['GENTODO'].data[key]['details']}")
-    elif brief:
-        print("Title".center(spaces))
-        print(f"{'─'*spaces}")
-        for key in ctx.obj['GENTODO'].data:
-            title = ctx.obj['GENTODO'].data[key]['title']
-            match brief:
-                case 'left':
-                    print(title)
-                case 'center':
-                    print(title.center(spaces))
-                case 'right':
-                    print(title.rjust(spaces))
-                case _:
-                    print(title)
     else:
         print(f"{'Title'.ljust(spaces)}| Details")
         print(f"{'─'*(spaces+9)}")
         for key in ctx.obj['GENTODO'].data:
             print(f"{ctx.obj['GENTODO'].data[key]['title'].ljust(spaces)}"\
                   f"| {ctx.obj['GENTODO'].data[key]['details']}")
+
+@click.command(name="brief", help="Shows brief todo list")
+@click.pass_context
+@click.option("--right", "alignment", flag_value="right", help="Right-align brief item list.")
+@click.option("--center", "alignment", flag_value="center", help="Center brief item list.")
+def brief(ctx, alignment, brief=None):
+    '''Shows the items to do'''
+    spaces = ctx.obj['GENTODO'].longest + 2
+
+    if ctx.obj['GENTODO'].data is None:
+        print("Nothing to do!")
+        return
+
+    print("Title".center(spaces))
+    print(f"{'─'*spaces}")
+    for key in ctx.obj['GENTODO'].data:
+        title = ctx.obj['GENTODO'].data[key]['title']
+        match alignment:
+            case 'center':
+                print(title.center(spaces))
+            case 'right':
+                print(title.rjust(spaces))
+            case _:
+                print(title)
 
 
 @click.command(help="Add an item to your todo list")

@@ -10,9 +10,8 @@ from gentodo import commands, __version__
 @click.group(invoke_without_command=True)
 @click.version_option(__version__)
 @click.option('--verbose', '-v', default=False, is_flag=True)
-@click.option('--brief', '-b', default=None, type=str)
 @click.pass_context
-def cmd(ctx, verbose, brief):
+def cmd(ctx, verbose):
     '''General purpose command group'''
     ctx.ensure_object(dict)
     ctx.obj['GENTODO'] = commands.Gentodo()
@@ -28,6 +27,7 @@ def bugs(ctx):
     ctx.obj['GENTODO'] = commands.Gentodo()
 
 cmd.add_command(commands.show)
+cmd.add_command(commands.brief)
 cmd.add_command(commands.add)
 cmd.add_command(commands.rm)
 cmd.add_command(commands.count)
